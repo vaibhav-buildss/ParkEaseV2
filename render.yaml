@@ -1,0 +1,7 @@
+services:
+  - type: web
+    name: parkease
+    env: node
+    buildCommand: gcc backend/api.c -o backend/api && npm install
+    startCommand: node frontend/server.js
+    autoDeploy: true
