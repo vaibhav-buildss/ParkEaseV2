@@ -185,6 +185,8 @@ async function parkVehicle(event) {
     const studentId = document.getElementById("studentId").value.trim();
     const number = document.getElementById("vehicleNumber").value.trim().toUpperCase();
     const type = document.getElementById("vehicleType").value;
+    const studentName = document.getElementById("studentName")?.value.trim() || "";
+    const phoneNumber = document.getElementById("phoneNumber")?.value.trim() || "";
 
     if (!studentId || !number || !type) {
         showToast("Please fill all fields.", "error");
@@ -192,7 +194,7 @@ async function parkVehicle(event) {
     }
 
     try {
-        const result = await api("park", { studentId, number, type });
+        const result = await api("park", { studentId, studentName, phoneNumber, number, type });
         await refresh();
         event.target.reset();
         showToast(`${number} assigned to slot ${result.slot}.`, "success");
@@ -275,7 +277,7 @@ function navigate(sectionId) {
     };
 
     document.getElementById("pageTitle").textContent = titles[sectionId] || "Dashboard";
-    document.querySelector(".sidebar").classList.remove("open");
+    document.querySelector(".main-nav")?.classList.remove("open");
     window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
@@ -319,7 +321,7 @@ document.getElementById("searchInput").addEventListener("keydown", event => {
 });
 
 document.getElementById("mobileMenu").addEventListener("click", () => {
-    document.querySelector(".sidebar").classList.toggle("open");
+    document.querySelector(".main-nav")?.classList.toggle("open");
 });
 
 updateClock();
