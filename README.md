@@ -9,8 +9,8 @@ vehicle entry, slot allocation, parking records and bill generation.
 
 <br>
 
-<a href="YOUR_RENDER_URL">
-  <img src="https://img.shields.io/badge/🌐_LIVE_DEMO-315CF5?style=for-the-badge" alt="Live Demo">
+<a href="parkeasev2.onrender.com/">
+  <img src="https://img.shields.io/badge/🌐_LIVE_DEMO-315CF5?style=for-the-badge" alt="Live Site">
 </a>
 &nbsp;
 <a href="https://github.com/vaibhav-buildss/ParkEaseV2">
@@ -119,8 +119,6 @@ from completed parking transactions.
 ---
 
 # 🖥️ Interface
-
-> Add your screenshots inside `docs/screenshots/` and update the filenames below.
 
 ### Dashboard
 
