@@ -9,7 +9,7 @@ vehicle entry, slot allocation, parking records and bill generation.
 
 <br>
 
-<a href="parkeasev2.onrender.com/">
+<a href="https://parkeasev2.onrender.com/">
   <img src="https://img.shields.io/badge/🌐_LIVE_DEMO-315CF5?style=for-the-badge" alt="Live Site">
 </a>
 &nbsp;
