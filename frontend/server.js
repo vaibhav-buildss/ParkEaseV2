@@ -11,6 +11,8 @@ const API_EXE = path.join(
     process.platform === "win32" ? "api.exe" : "api"
 );
 
+const PORT = Number(process.env.PORT) || 3000;
+
 const mime = {
     ".html": "text/html; charset=utf-8",
     ".css": "text/css; charset=utf-8",
@@ -78,8 +80,10 @@ async function handleApi(url, res) {
         if (action === "park") {
             const studentId = url.searchParams.get("studentId") || "";
             const number = (url.searchParams.get("number") || "").toUpperCase();
+            const name = url.searchParams.get("name") || "";
+            const phone = url.searchParams.get("phone") || "";
             const type = url.searchParams.get("type") || "";
-            return sendJson(res, 200, await runApi(["park", studentId, number, type]));
+            return sendJson(res, 200, await runApi(["park", studentId, name, phone, number, type]));
         }
 
         if (action === "remove") {
@@ -124,7 +128,7 @@ function serveFile(urlPath, res) {
 }
 
 const server = http.createServer(async (req, res) => {
-    const url = new URL(req.url, "http://localhost:3000");
+    const url = new URL(req.url, `http://localhost:${PORT}`);
 
     if (url.pathname === "/api") {
         await handleApi(url, res);
@@ -134,7 +138,7 @@ const server = http.createServer(async (req, res) => {
     serveFile(url.pathname, res);
 });
 
-server.listen(3000, () => {
-    console.log("ParkEase running at http://localhost:3000");
+server.listen(PORT, "0.0.0.0", () => {
+    console.log(`ParkEase running on port ${PORT}`);
     console.log("Frontend -> Node bridge -> C API -> .dat files");
 });

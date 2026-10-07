@@ -7,11 +7,13 @@
 #define MAX_VEHICLES 30
 #define MAX_TRANSACTIONS 1000
 
-#define DATA_FILE "../data/vehicles.dat"
-#define TRANSACTION_FILE "../data/transactions.dat"
+#define DATA_FILE "../data/vehicles_v2.dat"
+#define TRANSACTION_FILE "../data/transactions_v2.dat"
 
 struct Vehicle {
     int studentId;
+    char studentName[60];
+    char phone[20];
     char vehicleNumber[20];
     char vehicleType[10];
     int slotNumber;
@@ -27,6 +29,8 @@ struct ParkingSlot {
 
 struct Transaction {
     int studentId;
+    char studentName[60];
+    char phone[20];
     char vehicleNumber[20];
     char vehicleType[10];
     int slotNumber;
@@ -161,6 +165,7 @@ void parkVehicle(struct Vehicle vehicles[], int *vehicleCount) {
     }
 
     int studentId, slotFound = 0, assignedSlot = -1;
+    char studentName[60], phone[20];
     char vehicleNumber[20], vehicleType[10];
 
     printf("\n============================================\n");
@@ -169,6 +174,10 @@ void parkVehicle(struct Vehicle vehicles[], int *vehicleCount) {
 
     printf("Enter Student ID: ");
     scanf("%d", &studentId);
+    printf("Enter Student Name: ");
+    scanf(" %59[^\n]", studentName);
+    printf("Enter Phone Number: ");
+    scanf("%19s", phone);
     printf("Enter Vehicle Number: ");
     scanf("%19s", vehicleNumber);
     printf("Enter Vehicle Type (Bike/Car): ");
@@ -215,6 +224,8 @@ void parkVehicle(struct Vehicle vehicles[], int *vehicleCount) {
     }
 
     vehicles[*vehicleCount].studentId = studentId;
+    strcpy(vehicles[*vehicleCount].studentName, studentName);
+    strcpy(vehicles[*vehicleCount].phone, phone);
     strcpy(vehicles[*vehicleCount].vehicleNumber, vehicleNumber);
     strcpy(vehicles[*vehicleCount].vehicleType, vehicleType);
     vehicles[*vehicleCount].slotNumber = assignedSlot;
@@ -243,6 +254,8 @@ void removeVehicle(struct Vehicle vehicles[], int *vehicleCount) {
 
             if (transactionCount < MAX_TRANSACTIONS) {
                 transactions[transactionCount].studentId = vehicles[i].studentId;
+                strcpy(transactions[transactionCount].studentName, vehicles[i].studentName);
+                strcpy(transactions[transactionCount].phone, vehicles[i].phone);
                 strcpy(transactions[transactionCount].vehicleNumber, vehicles[i].vehicleNumber);
                 strcpy(transactions[transactionCount].vehicleType, vehicles[i].vehicleType);
                 transactions[transactionCount].slotNumber = vehicles[i].slotNumber;
@@ -263,6 +276,8 @@ void removeVehicle(struct Vehicle vehicles[], int *vehicleCount) {
             saveData(vehicles, *vehicleCount);
 
             printf("\n========== PARKING BILL ==========\n");
+            printf("Student : %s (ID %d)\n", vehicles[i].studentName, vehicles[i].studentId);
+            printf("Phone   : %s\n", vehicles[i].phone);
             printf("Vehicle : %s\n", vehicles[i].vehicleNumber);
             printf("Type    : %s\n", vehicles[i].vehicleType);
             printf("Slot    : %s%02d\n",
@@ -287,6 +302,8 @@ void searchVehicle(struct Vehicle vehicles[], int vehicleCount) {
         if (vehicles[i].active && strcmp(vehicles[i].vehicleNumber, vehicleNumber) == 0) {
             printf("\nVehicle Found!\n");
             printf("Student ID : %d\n", vehicles[i].studentId);
+            printf("Name       : %s\n", vehicles[i].studentName);
+            printf("Phone      : %s\n", vehicles[i].phone);
             printf("Vehicle    : %s\n", vehicles[i].vehicleNumber);
             printf("Type       : %s\n", vehicles[i].vehicleType);
             printf("Slot       : %s%02d\n",

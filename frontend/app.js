@@ -4,6 +4,14 @@ let appState = {
     transactions: []
 };
 
+let lastBill = null;
+
+try {
+    lastBill = JSON.parse(localStorage.getItem("parkeaseLastBill") || "null");
+} catch {
+    lastBill = null;
+}
+
 async function api(action, params = {}) {
     const query = new URLSearchParams({ action, ...params });
     const response = await fetch(`/api?${query.toString()}`);
@@ -34,12 +42,16 @@ function setConnection(online) {
     if (!dot || !strong) return;
 
     dot.style.background = online ? "#28c98c" : "#e55353";
-    dot.style.boxShadow = online ? "0 0 0 4px rgba(40,201,140,.12)" : "0 0 0 4px rgba(229,83,83,.12)";
+    dot.style.boxShadow = online
+        ? "0 0 0 4px rgba(40,201,140,.12)"
+        : "0 0 0 4px rgba(229,83,83,.12)";
     strong.textContent = online ? "C Backend Online" : "C Backend Offline";
 }
 
 function slotName(type, number) {
-    return type === "Bike" ? `A${String(number).padStart(2, "0")}` : `B${String(number).padStart(2, "0")}`;
+    return type === "Bike"
+        ? `A${String(number).padStart(2, "0")}`
+        : `B${String(number).padStart(2, "0")}`;
 }
 
 function formatDate(ts) {
@@ -54,12 +66,23 @@ function formatTime(ts) {
     });
 }
 
+function formatDateTime(ts) {
+    return new Date(Number(ts) * 1000).toLocaleString("en-IN", {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit"
+    });
+}
+
 function rupees(n) {
     return `₹${Number(n || 0).toLocaleString("en-IN")}`;
 }
 
 function renderAll() {
     const s = appState.stats;
+
     document.getElementById("totalSlots").textContent = s.totalSlots;
     document.getElementById("availableSlots").textContent = s.available;
     document.getElementById("occupiedSlots").textContent = s.occupied;
@@ -87,13 +110,15 @@ function renderActiveTable() {
     const body = document.getElementById("activeTable");
 
     if (!appState.vehicles.length) {
-        body.innerHTML = `<tr><td colspan="6" class="empty">No vehicles are currently parked.</td></tr>`;
+        body.innerHTML = `<tr><td colspan="8" class="empty">No vehicles are currently parked.</td></tr>`;
         return;
     }
 
     body.innerHTML = appState.vehicles.map(v => `
         <tr>
             <td><strong>${escapeHtml(v.number)}</strong></td>
+            <td>${escapeHtml(v.name)}</td>
+            <td>${escapeHtml(v.phone)}</td>
             <td><span class="badge ${v.type === "Bike" ? "blue" : "orange"}">${v.type}</span></td>
             <td>${escapeHtml(v.studentId)}</td>
             <td><strong>${v.slot}</strong></td>
@@ -128,7 +153,7 @@ function renderHistory() {
     document.getElementById("historyRevenue").textContent = rupees(appState.stats.revenue);
 
     if (!appState.transactions.length) {
-        body.innerHTML = `<tr><td colspan="7" class="empty">No completed parking transactions yet.</td></tr>`;
+        body.innerHTML = `<tr><td colspan="9" class="empty">No completed parking transactions yet.</td></tr>`;
         return;
     }
 
@@ -136,6 +161,8 @@ function renderHistory() {
         <tr>
             <td>${appState.transactions.length - index}</td>
             <td><strong>${escapeHtml(t.number)}</strong></td>
+            <td>${escapeHtml(t.name)}</td>
+            <td>${escapeHtml(t.phone)}</td>
             <td><span class="badge ${t.type === "Bike" ? "blue" : "orange"}">${t.type}</span></td>
             <td>${t.slot}</td>
             <td>${Number(t.hours).toFixed(2)} hrs</td>
@@ -164,13 +191,15 @@ function renderRevenue() {
     const body = document.getElementById("revenueTable");
 
     if (!count) {
-        body.innerHTML = `<tr><td colspan="5" class="empty">No revenue transactions yet.</td></tr>`;
+        body.innerHTML = `<tr><td colspan="7" class="empty">No revenue transactions yet.</td></tr>`;
         return;
     }
 
     body.innerHTML = [...transactions].reverse().slice(0, 8).map(t => `
         <tr>
             <td><strong>${escapeHtml(t.number)}</strong></td>
+            <td>${escapeHtml(t.name)}</td>
+            <td>${escapeHtml(t.phone)}</td>
             <td>${t.type}</td>
             <td>${t.slot}</td>
             <td>${Number(t.hours).toFixed(2)}</td>
@@ -183,18 +212,30 @@ async function parkVehicle(event) {
     event.preventDefault();
 
     const studentId = document.getElementById("studentId").value.trim();
+    const name = document.getElementById("studentName").value.trim();
+    const phone = document.getElementById("studentPhone").value.trim();
     const number = document.getElementById("vehicleNumber").value.trim().toUpperCase();
     const type = document.getElementById("vehicleType").value;
-    const studentName = document.getElementById("studentName")?.value.trim() || "";
-    const phoneNumber = document.getElementById("phoneNumber")?.value.trim() || "";
 
-    if (!studentId || !number || !type) {
+    if (!studentId || !name || !phone || !number || !type) {
         showToast("Please fill all fields.", "error");
         return;
     }
 
+    if (!/^\d{10}$/.test(phone)) {
+        showToast("Please enter a valid 10-digit phone number.", "error");
+        return;
+    }
+
     try {
-        const result = await api("park", { studentId, studentName, phoneNumber, number, type });
+        const result = await api("park", {
+            studentId,
+            name,
+            phone,
+            number,
+            type
+        });
+
         await refresh();
         event.target.reset();
         showToast(`${number} assigned to slot ${result.slot}.`, "success");
@@ -207,9 +248,13 @@ async function parkVehicle(event) {
 async function removeVehicle(number) {
     try {
         const result = await api("remove", { number });
+        lastBill = result.bill;
+        localStorage.setItem("parkeaseLastBill", JSON.stringify(lastBill));
+
         await refresh();
-        showToast(`${number} removed. Fee: ${rupees(result.fee)}.`, "success");
-        navigate("dashboard");
+        showBill(lastBill);
+        showToast(`${number} removed. Bill generated.`, "success");
+        navigate("bill");
     } catch (error) {
         showToast(error.message, "error");
     }
@@ -243,21 +288,46 @@ async function searchVehicle() {
             <div class="search-result-card">
                 <h4>Vehicle Found <span class="badge green">Currently Parked</span></h4>
                 <div class="result-grid">
+                    <div class="result-item"><span>Student Name</span><strong>${escapeHtml(v.name)}</strong></div>
+                    <div class="result-item"><span>Student ID</span><strong>${escapeHtml(v.studentId)}</strong></div>
+                    <div class="result-item"><span>Phone Number</span><strong>${escapeHtml(v.phone)}</strong></div>
                     <div class="result-item"><span>Vehicle Number</span><strong>${escapeHtml(v.number)}</strong></div>
                     <div class="result-item"><span>Vehicle Type</span><strong>${v.type}</strong></div>
-                    <div class="result-item"><span>Student ID</span><strong>${escapeHtml(v.studentId)}</strong></div>
                     <div class="result-item"><span>Parking Slot</span><strong>${v.slot}</strong></div>
                     <div class="result-item"><span>Entry Date</span><strong>${formatDate(v.entryTime)}</strong></div>
                     <div class="result-item"><span>Entry Time</span><strong>${formatTime(v.entryTime)}</strong></div>
                 </div>
-                <button class="primary-btn" style="margin-top:16px"
-                    onclick="removeVehicle('${escapeHtml(v.number)}')">
+                <button class="primary-btn" style="margin-top:16px" id="removeFoundBtn">
                     Remove Vehicle & Generate Bill
                 </button>
             </div>`;
+
+        document.getElementById("removeFoundBtn").addEventListener("click", () => {
+            removeVehicle(v.number);
+        });
     } catch (error) {
         showToast(error.message, "error");
     }
+}
+
+function showBill(bill) {
+    if (!bill) {
+        document.getElementById("billName").textContent = "No bill generated yet.";
+        return;
+    }
+
+    document.getElementById("billName").textContent = bill.name;
+    document.getElementById("billStudentId").textContent = bill.studentId;
+    document.getElementById("billPhone").textContent = bill.phone;
+    document.getElementById("billVehicle").textContent = bill.number;
+    document.getElementById("billType").textContent = bill.type;
+    document.getElementById("billSlot").textContent = bill.slot;
+    document.getElementById("billEntry").textContent = formatDateTime(bill.entryTime);
+    document.getElementById("billExit").textContent = formatDateTime(bill.exitTime);
+    document.getElementById("billHours").textContent = `${Number(bill.hours).toFixed(2)} hours`;
+    document.getElementById("billFee").textContent = rupees(bill.fee);
+    document.getElementById("billDate").textContent = formatDate(bill.exitTime);
+    document.getElementById("billTime").textContent = formatTime(bill.exitTime);
 }
 
 function navigate(sectionId) {
@@ -273,12 +343,15 @@ function navigate(sectionId) {
         park: "Park Vehicle",
         search: "Search Vehicle",
         history: "Parking History",
-        revenue: "Revenue"
+        revenue: "Revenue",
+        bill: "Parking Bill"
     };
 
     document.getElementById("pageTitle").textContent = titles[sectionId] || "Dashboard";
-    document.querySelector(".main-nav")?.classList.remove("open");
+    document.querySelector(".sidebar").classList.remove("open");
     window.scrollTo({ top: 0, behavior: "smooth" });
+
+    if (sectionId === "bill") showBill(lastBill);
 }
 
 function showToast(message, type = "success") {
@@ -290,7 +363,7 @@ function showToast(message, type = "success") {
 }
 
 function escapeHtml(value) {
-    return String(value)
+    return String(value ?? "")
         .replaceAll("&", "&amp;")
         .replaceAll("<", "&lt;")
         .replaceAll(">", "&gt;")
@@ -315,16 +388,24 @@ document.querySelectorAll("[data-go]").forEach(button => {
 
 document.getElementById("parkForm").addEventListener("submit", parkVehicle);
 document.getElementById("searchBtn").addEventListener("click", searchVehicle);
+document.getElementById("printBillBtn").addEventListener("click", () => {
+    if (!lastBill) {
+        showToast("Generate a bill first by removing a vehicle.", "error");
+        return;
+    }
+    window.print();
+});
 
 document.getElementById("searchInput").addEventListener("keydown", event => {
     if (event.key === "Enter") searchVehicle();
 });
 
 document.getElementById("mobileMenu").addEventListener("click", () => {
-    document.querySelector(".main-nav")?.classList.toggle("open");
+    document.querySelector(".sidebar").classList.toggle("open");
 });
 
 updateClock();
 setInterval(updateClock, 1000);
+showBill(lastBill);
 refresh();
 setInterval(refresh, 5000);

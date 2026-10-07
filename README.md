@@ -1,88 +1,52 @@
-# ParkEase — Full Connected Project
+# ParkEase — College Parking Management System
+
+## Features
+
+- Dashboard with live parking status
+- Parking slot visualization (20 bike slots + 10 car slots)
+- Park Vehicle with Student ID, Student Name, Phone Number, Vehicle Number and Vehicle Type
+- Search Vehicle
+- Parking History
+- Revenue
+- Printable Parking Bill after a vehicle is removed
+- C backend connected through Node.js
+- Data stored in binary `.dat` files
 
 ## Architecture
 
 Browser
   ↓
-HTML/CSS/JavaScript
+HTML / CSS / JavaScript
   ↓
-Node.js bridge (server.js)
+Node.js bridge (`frontend/server.js`)
   ↓
-C API (api.exe)
+C API (`backend/api.c`)
   ↓
-data/vehicles.dat + data/transactions.dat
+`data/vehicles_v2.dat` + `data/transactions_v2.dat`
 
-The original C terminal program is also included as `backend/main.c`.
+## Local Setup on Windows
 
-## Folder structure
+1. Open a terminal in the project folder.
+2. Run `compile.bat`.
+3. Run `start.bat`.
+4. Open `http://localhost:3000`.
 
-ParkEase/
-├── backend/
-│   ├── main.c
-│   ├── api.c
-│   └── (generated) main.exe / api.exe
-├── frontend/
-│   ├── index.html
-│   ├── style.css
-│   ├── app.js
-│   └── server.js
-├── data/
-└── README.md
+The website must be opened through Node.js. Do not open `index.html` directly.
 
-## Setup on Windows
+## Parking Bill
 
-1. Open a terminal in `ParkEase/backend`.
+When staff searches a parked vehicle and clicks **Remove Vehicle & Generate Bill**, the C backend calculates the parking fee and returns the completed transaction. ParkEase opens the Parking Bill page. The staff can click **Print Bill** and hand the printed bill to the customer.
 
-2. Compile the normal C program:
-   gcc main.c -o main.exe
+## Render
 
-3. Compile the web API:
-   gcc api.c -o api.exe
+The Node server reads the Render `PORT` environment variable and listens on `0.0.0.0`.
 
-4. Open another terminal in `ParkEase/frontend`.
+Build command:
 
-5. Start the bridge:
-   node server.js
+`gcc backend/api.c -o backend/api && npm install`
 
-6. Open:
-   http://localhost:3000
+Start command:
 
-## What is connected?
+`node frontend/server.js`
 
-The website does NOT use browser LocalStorage for parking data.
-
-Park Vehicle -> Node bridge -> api.exe -> C -> vehicles.dat
-
-Remove Vehicle -> Node bridge -> api.exe -> C -> transactions.dat
-
-Dashboard/History/Revenue -> Node bridge -> C -> .dat files
-
-## Important
-
-Run `server.js`, not `index.html` directly, when testing the connected version.
-
-The `data` folder must exist. The `.dat` files are created automatically after the C API saves data.
-
-Node.js and GCC must be installed and available in PATH.
-
-
-## Logo & favicon
-
-- `frontend/logo.svg` is used as the ParkEase logo.
-- The same SVG is registered as the browser favicon in `frontend/index.html`.
-
-## Deploy on Render
-
-This project includes `render.yaml`. The important part is that Render runs Linux, so it compiles
-`backend/api.c` into `backend/api` instead of using the Windows `api.exe`.
-
-1. Push the complete project to GitHub.
-2. In Render, choose **New + -> Web Service** and connect the GitHub repository.
-3. Render can use the included `render.yaml`, or set:
-   - Build Command: `gcc backend/api.c -o backend/api && npm install`
-   - Start Command: `node frontend/server.js`
-4. Deploy and open the generated Render URL.
-
-Note: Render's filesystem is not a permanent database. The `.dat` files can reset when the service
-is redeployed/restarted. This is fine for a college demo, but a production version should use a
-real database.
+The current file-based storage is suitable for a college demo, but a production system should use a persistent database.

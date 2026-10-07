@@ -1,0 +1,7 @@
+backend/*.exe
+backend/api
+backend/main
+backend/api_test
+backend/main_test
+data/*.dat
+node_modules/
