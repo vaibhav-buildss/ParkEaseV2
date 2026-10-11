@@ -1,3 +1,27 @@
+# ParkEase V2 — Campus Parking Management
+
+A redesigned, responsive frontend with a separate public landing page, onboarding page, and organised parking workspace. The original Node.js bridge and C API are retained.
+
+## Pages
+- `frontend/index.html` — public homepage
+- `frontend/app.html` — parking workspace
+- `frontend/app.html` — operational dashboard with tabs for slots, parking, search, history, revenue and bills
+
+## Run locally (Windows)
+1. Install GCC (MinGW-w64) and Node.js.
+2. Double-click `compile.bat`.
+3. Double-click `start.bat`.
+4. Visit `http://localhost:3000`.
+
+The home page and Getting Started use remote Unsplash photos and Google Fonts, so those visual assets need an internet connection. The application and C API remain local.
+
+## Notes
+- The C API is preserved; this redesign focuses on the frontend structure and styling.
+- For Render, use the included `render.yaml`; ensure the C API is compiled during build. File-based data may not persist across redeploys without persistent storage.
+- Staff/admin access is not authenticated in this student project; do not expose sensitive real data publicly without adding authentication.
+
+---
+
 <div align="center">
 
 # 🅿️ PARKEASE

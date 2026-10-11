@@ -29,24 +29,11 @@ async function refresh() {
         const data = await api("state");
         appState = data;
         renderAll();
-        setConnection(true);
     } catch (error) {
-        setConnection(false);
         showToast(error.message, "error");
     }
 }
 
-function setConnection(online) {
-    const dot = document.querySelector(".status-dot");
-    const strong = document.querySelector(".sidebar-footer strong");
-    if (!dot || !strong) return;
-
-    dot.style.background = online ? "#28c98c" : "#e55353";
-    dot.style.boxShadow = online
-        ? "0 0 0 4px rgba(40,201,140,.12)"
-        : "0 0 0 4px rgba(229,83,83,.12)";
-    strong.textContent = online ? "C Backend Online" : "C Backend Offline";
-}
 
 function slotName(type, number) {
     return type === "Bike"
@@ -96,7 +83,7 @@ function renderAll() {
     document.getElementById("occupancyPercent").textContent = `${percent}%`;
     const degrees = percent * 3.6;
     document.getElementById("occupancyRing").style.background =
-        `conic-gradient(var(--accent) ${degrees}deg, #edf0f5 ${degrees}deg)`;
+        `conic-gradient(var(--accent) ${degrees}deg, var(--ring-track) ${degrees}deg)`;
 
     document.getElementById("slotFreeSummary").textContent = s.available;
 

@@ -1,212 +1,137 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="ParkEase - College Parking Slot Management System">
-<title>ParkEase — College Parking Management</title>
-<link rel="icon" type="image/svg+xml" href="logo.svg">
-<link rel="stylesheet" href="style.css">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="description" content="ParkEase makes campus parking easier to manage.">
+    <title>ParkEase — Parking, made simple</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="stylesheet" href="style.css">
 </head>
-<body>
-<aside class="sidebar">
-    <div class="brand">
-        <img class="brand-logo" src="logo.svg" alt="ParkEase logo">
-        <div><h1>ParkEase</h1><span>College Parking</span></div>
-    </div>
 
-    <nav>
-        <button class="nav-item active" data-section="dashboard"><span>⌂</span> Dashboard</button>
-        <button class="nav-item" data-section="slots"><span>▦</span> Parking Slots</button>
-        <button class="nav-item" data-section="park"><span>＋</span> Park Vehicle</button>
-        <button class="nav-item" data-section="search"><span>⌕</span> Search Vehicle</button>
-        <button class="nav-item" data-section="history"><span>◷</span> Parking History</button>
-        <button class="nav-item" data-section="revenue"><span>₹</span> Revenue</button>
-        <button class="nav-item" data-section="bill"><span>▤</span> Parking Bill</button>
-    </nav>
-
-    <div class="sidebar-footer">
-        <div class="status-dot"></div>
-        <div><strong>C Backend Offline</strong><small>ParkEase v1.0</small></div>
-    </div>
-</aside>
-
-<main class="main">
-<header class="topbar">
-    <div>
-        <p class="eyebrow">COLLEGE PARKING MANAGEMENT</p>
-        <h2 id="pageTitle">Dashboard</h2>
-    </div>
-    <div class="topbar-actions">
-        <div class="clock" id="clock">--:--:--</div>
-        <button class="mobile-menu" id="mobileMenu">☰</button>
-    </div>
-</header>
-
-<div id="toast" class="toast"></div>
-
-<section class="section active" id="dashboard">
-    <div class="hero-card">
-        <div>
-            <span class="pill">LIVE PARKING OVERVIEW</span>
-            <h3>Good evening, <span>ParkEase.</span></h3>
-            <p>Manage campus vehicles, monitor available slots and track parking revenue from one place.</p>
-        </div>
-        <button class="primary-btn" data-go="park">+ Park Vehicle</button>
-    </div>
-
-    <div class="stats-grid">
-        <div class="stat-card"><div class="stat-icon blue">▦</div><div><span>Total Slots</span><strong id="totalSlots">30</strong></div></div>
-        <div class="stat-card"><div class="stat-icon green">✓</div><div><span>Available</span><strong id="availableSlots">30</strong></div></div>
-        <div class="stat-card"><div class="stat-icon orange">●</div><div><span>Occupied</span><strong id="occupiedSlots">0</strong></div></div>
-        <div class="stat-card"><div class="stat-icon purple">₹</div><div><span>Total Revenue</span><strong id="totalRevenue">₹0</strong></div></div>
-    </div>
-
-    <div class="dashboard-grid">
-        <div class="panel">
-            <div class="panel-head"><div><h3>Parking Occupancy</h3><p>Current campus parking utilization</p></div><span class="live-label"><i></i> Live</span></div>
-            <div class="occupancy">
-                <div class="ring" id="occupancyRing"><div><strong id="occupancyPercent">0%</strong><span>occupied</span></div></div>
-                <div class="occupancy-details">
-                    <div><span class="legend-dot bike"></span><span>Bikes</span><strong id="bikeCount">0</strong></div>
-                    <div><span class="legend-dot car"></span><span>Cars</span><strong id="carCount">0</strong></div>
-                    <div><span class="legend-dot free"></span><span>Available</span><strong id="freeCount">30</strong></div>
+<body class="marketing-page">
+    <header class="site-header"><a class="site-brand" href="index.html"><img src="logo.svg"
+                alt="" /><span>ParkEase<small>CAMPUS PARKING</small></span></a>
+        <nav class="site-nav"><a href="#features">Features</a><a href="#how-it-works">How it works</a></nav><a
+            class="header-cta" href="app.html">Open workspace <span>↗</span></a><button class="mobile-nav-toggle"
+            aria-label="Toggle navigation"
+            onclick="document.querySelector('.site-nav').classList.toggle('nav-open')">☰</button>
+    </header>
+    <main>
+        <section class="landing-hero">
+            <div class="hero-copy">
+                <div class="overline"><span class="overline-dot"></span> SMARTER CAMPUS OPERATIONS</div>
+                <h1>Parking, without<br>the <em>hassle.</em></h1>
+                <p class="hero-lede">A smarter way to manage campus parking. Check availability, register vehicles and
+                    keep every parking record in one focused workspace.</p>
+                <div class="hero-actions"><a class="button-primary" href="app.html">Open workspace <span>↗</span></a><a
+                        class="button-quiet" href="app.html">Explore workspace <span>↗</span></a></div>
+                <div class="hero-proof">
+                    <div class="proof-avatars"><span>✓</span><span>✓</span><span>✓</span></div>
+                    <p>Built for students and campus staff</p>
                 </div>
             </div>
-        </div>
-
-        <div class="panel">
-            <div class="panel-head"><div><h3>Quick Actions</h3><p>Common parking operations</p></div></div>
-            <div class="quick-actions">
-                <button class="quick-action" data-go="park"><b>＋</b><span>Park Vehicle<small>Assign a slot</small></span></button>
-                <button class="quick-action" data-go="search"><b>⌕</b><span>Find Vehicle<small>Search active vehicles</small></span></button>
-                <button class="quick-action" data-go="slots"><b>▦</b><span>View Slots<small>Check availability</small></span></button>
-                <button class="quick-action" data-go="history"><b>◷</b><span>View History<small>Past transactions</small></span></button>
+            <div class="hero-visual"><img class="hero-photo" src="assets/parking-real-photo.png"
+                    alt="Realistic modern underground parking garage with parked cars and warm orange lighting">
+                <div class="photo-shade"></div>
+                <div class="visual-label"><span class="label-icon">↗</span>
+                    <div><strong>Campus parking</strong><small>One clear view of every space</small></div><span
+                        class="label-status"><i></i> Organised</span>
+                </div>
+                <div class="floating-slot-card">
+                    <div class="floating-card-top"><span>LIVE OVERVIEW</span><span class="mini-dot"></span></div>
+                    <div class="floating-slots">
+                        <div class="mini-slot occupied"><span>A01</span><small>In use</small></div>
+                        <div class="mini-slot"><span>A02</span><small>Open</small></div>
+                        <div class="mini-slot"><span>A03</span><small>Open</small></div>
+                    </div>
+                    <p><b>Simple by design.</b> Easy to understand at a glance.</p>
+                </div>
+                <div class="hero-orb orb-one"></div>
+                <div class="hero-orb orb-two"></div>
             </div>
-        </div>
-    </div>
-
-    <div class="panel">
-        <div class="panel-head"><div><h3>Currently Parked</h3><p>Vehicles currently inside campus</p></div><button class="text-btn" data-go="search">View all →</button></div>
-        <div class="table-wrap">
-            <table><thead><tr><th>Vehicle</th><th>Name</th><th>Phone</th><th>Type</th><th>Student ID</th><th>Slot</th><th>Entry Time</th><th>Status</th></tr></thead>
-            <tbody id="activeTable"></tbody></table>
-        </div>
-    </div>
-</section>
-
-<section class="section" id="slots">
-    <div class="page-subtitle-row"><p>30 slots across two vehicle categories</p>
-    <div class="slot-legend"><span><i class="available"></i> Available</span><span><i class="occupied"></i> Occupied</span></div></div>
-
-    <div class="slot-summary">
-        <div><strong>20</strong><span>Bike Slots</span></div>
-        <div><strong>10</strong><span>Car Slots</span></div>
-        <div><strong id="slotFreeSummary">30</strong><span>Available Now</span></div>
-    </div>
-
-    <div class="slot-group"><h4>Bike Parking <span>A01 — A20</span></h4><div class="slot-grid" id="bikeSlots"></div></div>
-    <div class="slot-group"><h4>Car Parking <span>B01 — B10</span></h4><div class="slot-grid car-grid" id="carSlots"></div></div>
-</section>
-
-<section class="section" id="park">
-    <div class="form-card">
-        <div class="form-intro">
-            <div class="form-intro-copy">
-                <p>Enter the student and vehicle details. ParkEase will automatically assign the first available slot.</p>
+        </section>
+        <section class="trust-strip"><span>BUILT FOR DAY-TO-DAY CAMPUS PARKING</span>
+            <div><span>01 / CLARITY</span><span>02 / CONTROL</span><span>03 / LESS FRICTION</span></div>
+        </section>
+        <section class="feature-section" id="features">
+            <div class="section-intro">
+                <div class="overline">THE PARK EASE APPROACH</div>
+                <h2>Less searching.<br><em>More moving.</em></h2>
+                <p>Everything needed to keep campus parking moving, without a cluttered interface or scattered records.
+                </p>
             </div>
-            <span class="pill">NEW ENTRY</span>
-        </div>
-        <form id="parkForm">
-            <div class="form-grid form-grid-2x2">
-                <label>Student ID<input id="studentId" type="number" min="1" placeholder="e.g. 1023" required></label>
-                <label>Student Name<input id="studentName" type="text" maxlength="59" placeholder="e.g. Rahul Sharma" required></label>
-                <label>Phone Number<input id="studentPhone" type="tel" maxlength="19" placeholder="e.g. 9876543210" required></label>
-                <label>Vehicle Number<input id="vehicleNumber" type="text" maxlength="19" placeholder="e.g. UP78AB1234" required></label>
-                <label>Vehicle Type<select id="vehicleType" required><option value="">Select type</option><option value="Bike">Bike</option><option value="Car">Car</option></select></label>
+            <div class="feature-grid">
+                <article class="feature-card feature-card-dark">
+                    <div class="feature-number">01</div>
+                    <div class="feature-icon lime-icon">▦</div>
+                    <h3>See every slot</h3>
+                    <p>Understand what's available and what's occupied with a clear, colour-coded parking layout.</p>
+                    <div class="feature-mini-grid"><span class="free">A01</span><span class="busy">A02</span><span
+                            class="free">A03</span><span class="free">A04</span><span class="busy">A05</span><span
+                            class="free">A06</span></div>
+                </article>
+                <article class="feature-card">
+                    <div class="feature-number">02</div>
+                    <div class="feature-icon">↗</div>
+                    <h3>Register in moments</h3>
+                    <p>Capture student and vehicle details through a simple form. Let the system assign the next
+                        available space.</p>
+                    <div class="mini-form"><span>Vehicle number</span><b>UP78 AB 1234</b>
+                        <div><i></i><i></i><i></i></div>
+                    </div>
+                </article>
+                <article class="feature-card feature-card-photo"><img src="assets/parking-records.svg"
+                        alt="A clean dark parking records dashboard with vehicle entries and status indicators">
+                    <div class="photo-card-overlay">
+                        <div class="feature-number">03</div>
+                        <h3>Keep records together</h3>
+                        <p>Search active vehicles, review completed sessions and print a clear parking bill.</p>
+                    </div>
+                </article>
             </div>
-            <div class="fee-info">
-                <div><span>Bike rate</span><strong>₹10 first hour + ₹5/hour</strong></div>
-                <div><span>Car rate</span><strong>₹20 first hour + ₹10/hour</strong></div>
+        </section>
+        <section class="steps-section" id="how-it-works">
+            <div class="steps-heading">
+                <div class="overline">HOW IT WORKS</div>
+                <h2>From arrival to exit.<br><em>All in order.</em></h2>
             </div>
-            <button class="primary-btn" type="submit">Assign Parking Slot →</button>
-        </form>
-    </div>
-</section>
-
-<section class="section" id="search">
-    <div class="page-subtitle"><p>Find an active vehicle by registration number</p></div>
-    <div class="search-box"><input id="searchInput" type="text" placeholder="Enter vehicle number..."><button class="primary-btn" id="searchBtn">Search</button></div>
-    <div id="searchResult"></div>
-</section>
-
-<section class="section" id="history">
-    <div class="page-subtitle-row"><p>Completed parking transactions from the C backend</p>
-    <div class="history-total"><span>Total Revenue</span><strong id="historyRevenue">₹0</strong></div></div>
-    <div class="panel"><div class="table-wrap">
-        <table><thead><tr><th>#</th><th>Vehicle</th><th>Name</th><th>Phone</th><th>Type</th><th>Slot</th><th>Parking Time</th><th>Fee</th><th>Date</th></tr></thead>
-        <tbody id="historyTable"></tbody></table>
-    </div></div>
-</section>
-
-<section class="section" id="revenue">
-    <div class="page-subtitle"><p>Parking income from completed C backend transactions</p></div>
-    <div class="revenue-hero"><div><span>Total Revenue</span><strong id="revenueBig">₹0</strong><small id="transactionCount">0 completed transactions</small></div><div class="revenue-icon">₹</div></div>
-    <div class="revenue-grid">
-        <div class="panel mini-stat"><span>Completed Transactions</span><strong id="completedCount">0</strong></div>
-        <div class="panel mini-stat"><span>Average Parking Fee</span><strong id="averageFee">₹0</strong></div>
-        <div class="panel mini-stat"><span>Bike Transactions</span><strong id="bikeTransactions">0</strong></div>
-        <div class="panel mini-stat"><span>Car Transactions</span><strong id="carTransactions">0</strong></div>
-    </div>
-    <div class="panel"><div class="panel-head"><div><h3>Recent Transactions</h3><p>Latest completed parking sessions</p></div></div>
-    <div class="table-wrap"><table><thead><tr><th>Vehicle</th><th>Name</th><th>Phone</th><th>Type</th><th>Slot</th><th>Hours</th><th>Fee</th></tr></thead><tbody id="revenueTable"></tbody></table></div></div>
-</section>
-
-<section class="section" id="bill">
-    <div class="page-subtitle"><p>Print the latest parking bill and hand it over to the customer.</p></div>
-
-    <div class="bill-card" id="printBill">
-        <div class="bill-header">
+            <div class="steps-list">
+                <article><span>01</span>
+                    <div>
+                        <h3>Check availability</h3>
+                        <p>Open the workspace and view the bike and car slot layout.</p>
+                    </div><b>↗</b>
+                </article>
+                <article><span>02</span>
+                    <div>
+                        <h3>Add a vehicle</h3>
+                        <p>Enter the student's details and vehicle number. ParkEase assigns an available slot.</p>
+                    </div><b>↗</b>
+                </article>
+                <article><span>03</span>
+                    <div>
+                        <h3>Manage the record</h3>
+                        <p>Find active vehicles, remove a vehicle on exit and generate a printable bill.</p>
+                    </div><b>↗</b>
+                </article>
+            </div>
+        </section>
+        <section class="closing-cta">
             <div>
-                <div class="bill-brand">PARKEASE</div>
-                <div class="bill-subtitle">College Parking Management System</div>
-            </div>
-            <div class="bill-title">PARKING BILL</div>
-        </div>
-
-        <div class="bill-meta">
-            <div><span>Bill Date</span><strong id="billDate">—</strong></div>
-            <div><span>Bill Time</span><strong id="billTime">—</strong></div>
-        </div>
-
-        <div class="bill-section-title">Customer Details</div>
-        <div class="bill-grid">
-            <div><span>Student Name</span><strong id="billName">—</strong></div>
-            <div><span>Student ID</span><strong id="billStudentId">—</strong></div>
-            <div><span>Phone Number</span><strong id="billPhone">—</strong></div>
-            <div><span>Vehicle Number</span><strong id="billVehicle">—</strong></div>
-            <div><span>Vehicle Type</span><strong id="billType">—</strong></div>
-            <div><span>Parking Slot</span><strong id="billSlot">—</strong></div>
-        </div>
-
-        <div class="bill-section-title">Parking Summary</div>
-        <div class="bill-summary">
-            <div><span>Entry</span><strong id="billEntry">—</strong></div>
-            <div><span>Exit</span><strong id="billExit">—</strong></div>
-            <div><span>Parking Duration</span><strong id="billHours">—</strong></div>
-        </div>
-
-        <div class="bill-total"><span>Total Amount</span><strong id="billFee">₹0</strong></div>
-        <p class="bill-thanks">Thank you for using ParkEase.</p>
-    </div>
-
-    <div class="bill-actions">
-        <button class="primary-btn" id="printBillBtn">Print Bill</button>
-        <button class="secondary-btn" data-go="dashboard">Back to Dashboard</button>
-    </div>
-</section>
-
-</main>
-<script src="app.js"></script>
+                <div class="overline">READY WHEN YOU ARE</div>
+                <h2>A smoother parking day<br>starts <em>here.</em></h2>
+            </div><a class="button-light" href="app.html">Open workspace <span>↗</span></a>
+            <div class="closing-decoration">P</div>
+        </section>
+    </main>
+    <footer class="site-footer"><a class="site-brand" href="index.html"><img src="logo.svg"
+                alt="" /><span>ParkEase<small>CAMPUS PARKING</small></span></a>
+        <p>Thoughtfully organised campus parking.</p>
+        <div><a href="#how-it-works">How it works</a><a href="app.html">Workspace</a></div><span class="copyright">©
+            2026 ParkEase</span>
+    </footer>
 </body>
+
 </html>
